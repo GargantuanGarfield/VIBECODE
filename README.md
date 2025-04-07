@@ -11,7 +11,7 @@ This is my magnum opus, more refined and complete than my first edition:
   - Increased quality and accuracy of questions
   - All together more elaborate experience
 
-If I could improve anything, I would improve the design of the website. It isn't as overwhelming as I intended.
+If I could improve anything, I would improve the design of the website. It is a bit too simple and I need something much more offensive on the eyes
 
 
 <strong>MAIN CONTRIBUTIONS:</strong>
