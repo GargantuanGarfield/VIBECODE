@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ultimate "Are You Gay?" Quiz</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, #ff0000, #ff7700, #ffff00, #00ff00, #0000ff, #8b00ff);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .intro {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        
+        .question-container.active {
+            display: block;
+        }
+        
+        .question-number {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .question {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .option {
+            padding: 15px;
+            background-color: #f1f1f1;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 1rem;
+        }
+        
+        .option:hover {
+            background-color: #e1e1e1;
+            transform: translateY(-2px);
+        }
+        
+        .start-btn, .next-btn {
+            background-color: #ff4081;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px auto;
+            display: block;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .start-btn:hover, .next-btn:hover {
+            background-color: #e03769;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .next-btn {
+            display: none;
+        }
+        
+        .results-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            display: none;
+        }
+        
+        .result-title {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: #ff4081;
+        }
+        
+        .result-description {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        
+        .restart-btn {
+            background-color: #673ab7;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px auto;
+            display: block;
+        }
+        
+        .restart-btn:hover {
+            background-color: #5e35b1;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #e1e1e1;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ff7700, #ffff00, #00ff00, #0000ff, #8b00ff);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .share-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .share-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .twitter {
+            background-color: #1DA1F2;
+        }
+        
+        .facebook {
+            background-color: #4267B2;
+        }
+        
+        .share-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .question {
+                font-size: 1.3rem;
+            }
+        }
+        .jumpscare-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            z-index: 1000;
+            opacity: 0;
+        }
+
+        .jumpscare-overlay.active {
+            display: block;
+            animation: fadeIn 0.1s forwards;
+        }
+
+        .jumpscare-overlay img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        .intro {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: opacity 0.3s ease;
+        }
+
+        .start-btn.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .results-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .results-container.active {
+            opacity: 1;
+        }
+    </style>
+    <script>
+        // Create an audio context when the page loads
+        let audioContext;
+        
+        // Initialize audio on first user interaction (browser requirement)
+        function initAudio() {
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            // Remove the initialization event listeners once audio is set up
+            document.removeEventListener('click', initAudio);
+            document.removeEventListener('touchstart', initAudio);
+        }
+        }
+        
+        // Add event listeners for initializing audio
+        document.addEventListener('click', initAudio);
+        document.addEventListener('touchstart', initAudio);
+        
+        // Sound file paths - replace these with your actual sound files
+        const buttonSounds = {
+        option1: 'sounds/option1.mp3',
+        option2: 'sounds/option2.mp3',
+        option3: 'sounds/option3.mp3',
+        option4: 'sounds/option4.mp3',
+        next: 'sounds/next.mp3',
+        start: 'sounds/start.mp3',
+        result: 'sounds/result.mp3',
+        restart: 'sounds/restart.mp3',
+        gayResult: 'sounds/gay-result.mp3',
+        notGayResult: 'sounds/not-gay-result.mp3',
+        };
+        
+        // Preload all sounds
+        const soundBuffers = {};
+        
+        function preloadSounds() {
+        Object.keys(buttonSounds).forEach(key => {
+            const request = new XMLHttpRequest();
+            request.open('GET', buttonSounds[key], true);
+            request.responseType = 'arraybuffer';
+            
+            request.onload = function() {
+            audioContext.decodeAudioData(request.response, function(buffer) {
+                soundBuffers[key] = buffer;
+            }, function(e) {
+                console.error('Error decoding audio data', e);
+            });
+            };
+            
+            request.onerror = function() {
+            console.error('Could not load sound: ' + buttonSounds[key]);
+            };
+            
+            request.send();
+        });
+        }
+        
+        // Play a sound
+        function playSound(soundKey) {
+        if (!audioContext || !soundBuffers[soundKey]) return;
+        
+        const source = audioContext.createBufferSource();
+        source.buffer = soundBuffers[soundKey];
+        source.connect(audioContext.destination);
+        source.start(0);
+        }
+        
+        // Once DOM is loaded, set up sound effects
+        document.addEventListener('DOMContentLoaded', function() {
+        // Initialize audio context when page loads
+        try {
+            initAudio();
+            // Preload sounds once audio context is created
+            setTimeout(preloadSounds, 1000);
+        } catch (e) {
+            console.error('Web Audio API is not supported in this browser', e);
+        }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>GAY QUIZ..... TWO!!!!!</h1>
+        </header>
+        
+        <div class="intro active">
+            <p>Welcome to the most scientific quiz on the internet that will determine your sexuality with 100% accuracy! Answer these 25 questions honestly and we'll tell you if you're gay.</p>
+            <p><em>(Disclaimer: This quiz is for entertainment purposes only)</em></p>
+            <button class="start-btn">Start Quiz</button>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress"></div>
+        </div>
+        
+        <div id="question-1" class="question-container">
+            <div class="question-number">Question 1/25</div>
+            <div class="question">What's your preferred way to spend a weekend?</div>
+            <div class="options">
+                <button class="option">Outdoors hiking or camping</button>
+                <button class="option">Binge-watching abram at his home</button>
+                <button class="option">Going out with friends</button>
+                <button class="option">Creative projects or hobbies</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-2" class="question-container">
+            <div class="question-number">Question 2/25</div>
+            <div class="question">How do you typically handle stress?</div>
+            <div class="options">
+                <button class="option">Exercise or physical activity</button>
+                <button class="option">Talk it out with someone</button>
+                <button class="option">Take time alone to recharge</button>
+                <button class="option">Find abram.... he will rue the day he met you</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-3" class="question-container">
+            <div class="question-number">Question 3/25</div>
+            <div class="question">What's your approach to making decisions?</div>
+            <div class="options">
+                <button class="option">Trust my gut instinct</button>
+                <button class="option">Make lists of pros and cons</button>
+                <button class="option">Ask abram or family for advice</button>
+                <button class="option">Research thoroughly before choosing</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-4" class="question-container">
+            <div class="question-number">Question 4/25</div>
+            <div class="question">The moon winks at you. You:</div>
+            <div class="options">
+                <button class="option">Sacrifice abram to earn its favor</button>
+                <button class="option">Report it to NASA immediately</button>
+                <button class="option">Ask if it's seeing anyone</button>
+                <button class="option">Hide under your bed until sunrise</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-5" class="question-container">
+            <div class="question-number">Question 5/25</div>
+            <div class="question">Your toaster is actually a portal to another dimension. You discover this when:</div>
+            <div class="options">
+                <button class="option">Your bagel comes back with a passport stamp</button>
+                <button class="option">Tiny beings emerge offering toast tributes</button>
+                <button class="option">It returns your bread speaking fluent Portuguese</button>
+                <button class="option">You hear muffled disco music from inside it</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-6" class="question-container">
+            <div class="question-number">Question 6/25</div>
+            <div class="question">You discover you can speak to traffic lights. They mostly talk about:</div>
+            <div class="options">
+                <button class="option">Celebrity gossip from the 1950s</button>
+                <button class="option">Wishing they could fall and crush abram</button>
+                <button class="option">Critiques of your driving</button>
+                <button class="option">Elaborate conspiracy theories about roundabouts</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-7" class="question-container">
+            <div class="question-number">Question 7/25</div>
+            <div class="question">Your grocery store receipt is actually:</div>
+            <div class="options">
+                <button class="option">A coded message from time travelers</button>
+                <button class="option">A psychic reading of your future</button>
+                <button class="option">Sheet music for the world's saddest song</button>
+                <button class="option">Abram in disguise, trying to sneak into your house</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-8" class="question-container">
+            <div class="question-number">Question 8/25</div>
+            <div class="question">Every time you sneeze, you temporarily:</div>
+            <div class="options">
+                <button class="option">Switch to an alternate universe version of yourself</button>
+                <button class="option">Can see everyone's childhood memories floating above their heads</button>
+                <button class="option">Speak a language that only cats understand</button>
+                <button class="option">Become one in mind with abram and see and feel what he sees and feels</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-9" class="question-container">
+            <div class="question-number">Question 9/25</div>
+            <div class="question">The WiFi password at your local coffee shop is actually:</div>
+            <div class="options">
+                <button class="option">The secret to immortality written backwards</button>
+                <button class="option">A spell that makes your coffee taste better</button>
+                <button class="option">Benson1!</button>
+                <button class="option">The prescription to... "bomb delivery pills"</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-10" class="question-container">
+            <div class="question-number">Question 10/25</div>
+            <div class="question">Abram is plotting to:</div>
+            <div class="options">
+                <button class="option">Change and mannipulate time so that he gets 40 years per minute</button>
+                <button class="option">Start a sock puppet revolution</button>
+                <button class="option">Escape through the dryer portal to the rabbids&Mario universe</button>
+                <button class="option">Replace your right hand with a BOMB OMGOMGOMG NO STOP ITS GONN BLOW UP</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-11" class="question-container">
+            <div class="question-number">Question 11/25</div>
+            <div class="question">Every mirror in your home is actually:</div>
+            <div class="options">
+                <button class="option">A window to a parallel universe... but it's actually just Abram's house</button>
+                <button class="option">A dormant Abram waiting for the perfect moment to replace you</button>
+                <button class="option">A portal your furniture uses to switch places at night</button>
+                <button class="option">it's you..... just you.... 📦📦🤓📦📦</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-12" class="question-container">
+            <div class="question-number">Question 12/25</div>
+            <div class="question">The reason you can never find matching tupperware lids is:</div>
+            <div class="options">
+                <button class="option">They're building a secret underground civilization in your cabinets</button>
+                <button class="option">They temporarily exist in the 4th dimension every third Tuesday</button>
+                <button class="option">They're in a toxic relationship with Abram</button>
+                <button class="option">They identify as bowls now and you should respect their journey</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-13" class="question-container">
+            <div class="question-number">Question 13/25</div>
+            <div class="question">When no one is looking, your elbows:</div>
+            <div class="options">
+                <button class="option">Write poetry about the loneliness of being joints</button>
+                <button class="option">Emit a soft glow visible only to bees</button>
+                <button class="option">Hold secret meetings with your knees to plot against your shoulders</button>
+                <button class="option">I'm just a freak im SUCH A FREAK, just lmk 👅👅👅👅👅👅👅</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-14" class="question-container">
+            <div class="question-number">Question 14/25</div>
+            <div class="question">The dust under your bed has developed:</div>
+            <div class="options">
+                <button class="option">A complex economic system based on lint trading</button>
+                <button class="option">Its own religion worshipping Abram as a distant sky god</button>
+                <button class="option">A university with tenure-track positions in Hair Ball Studies</button>
+                <button class="option">Culinary skills and unique foods you've never even dreamed  of</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-15" class="question-container">
+            <div class="question-number">Question 15/25</div>
+            <div class="question">Abram is here:</div>
+            <div class="options">
+                <button class="option">"LOOK OUT RUNRUNRUNRUNRUNR FOR YOUR LIIIFFFEEE!!!!!!"</button>
+                <button class="option">"Hey man wsg."</button>
+                <button class="option">*grab him*</button>
+                <button class="option">"okay joe, right foor green..."</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-16" class="question-container">
+            <div class="question-number">Question 16/25</div>
+            <div class="question">When you forget why you walked into a room, it's because:</div>
+            <div class="options">
+                <button class="option">Doorways are actually memory vampires feeding on your purpose</button>
+                <button class="option">You briefly slipped into an alternate timeline where you are abram and OH GOD WHERE AM I??</button>
+                <button class="option">Your future self hijacked your brain to prevent a butterfly effect disaster, that future is dead now</button>
+                <button class="option">The room itself rejected your ethereal frequency</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-17" class="question-container">
+            <div class="question-number">Question 17/25</div>
+            <div class="question">Your fingerprints are constantly:</div>
+            <div class="options">
+                <button class="option">Rearranging themselves when you sleep</button>
+                <button class="option">Spinning uncontrollably, distorting everything you touch into a mess of what it used to be</button>
+                <button class="option">Writing your autobiography on everything you touch</button>
+                <button class="option">erm... what the gleep? what is glooping on right gleep???</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-18" class="question-container">
+            <div class="question-number">Question 18/25</div>
+            <div class="question">Your earlobes can actually:</div>
+            <div class="options">
+                <button class="option">Detect Wi-Fi passwords telepathically</button>
+                <button class="option">EXPLODE OH GOD YOU NEED TO PULL THEM OFF NOWNOWNOWNOWNOW</button>
+                <button class="option">Time travel independently of the rest of your body</button>
+                <button class="option">Taste anything they touch, and they're constantly judging your pillowcase</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-19" class="question-container">
+            <div class="question-number">Question 19/25</div>
+            <div class="question">Every time we touch:</div>
+            <div class="options">
+                <button class="option">I get this feeeling</button>
+                <button class="option">and every time we kiss</button>
+                <button class="option">I swear I can fly</button>
+                <button class="option">Can you feel my heart beat fast?</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-20" class="question-container">
+            <div class="question-number">Question 20/25</div>
+            <div class="question">The real reason your phone battery drains so quickly is:</div>
+            <div class="options">
+                <button class="option">Theres a new micro-electro-organism that works as a spy for Jeff Bezos</button>
+                <button class="option">Your phone is in a long-distance relationship with a calculator in Shanghai</button>
+                <button class="option">It's converting energy into alternative timelines where you made better life choices</button>
+                <button class="option">The battery is actually abram and hes REALLY HUNGRY</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-21" class="question-container">
+            <div class="question-number">Question 21/25</div>
+            <div class="question">Your eyebrows are actually:</div>
+            <div class="options">
+                <button class="option">Two BOMBS OMGOMGOMG PULL THEM OFF OR YOUR BRAIN WILL exPLODE!!!!!</button>
+                <button class="option">Antennas that connect to the cosmic consciousness but only receive spam</button>
+                <button class="option">The physical manifestation of your fears, growing stronger and stronger</button>
+                <button class="option">Guardians preventing your thoughts from physically escaping through your forehead</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-22" class="question-container">
+            <div class="question-number">Question 22/25</div>
+            <div class="question">What do you do when the cops blow up your front door, lobbying for your arrest?:</div>
+            <div class="options">
+                <button class="option">I DID NOTHING WRONG NONONONONO IT WASNT ME</button>
+                <button class="option">*grabs bat* well, here we go again</button>
+                <button class="option">*grabs abram* well here we go again</button>
+                <button class="option">I ain't there chief, it's only 11 pm</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-23" class="question-container">
+            <div class="question-number">Question 23/25</div>
+            <div class="question">When you get déjà vu, it's because:</div>
+            <div class="options">
+                <button class="option">You are changing and manipulating time so that you can experience the same moment again</button>
+                <button class="option">Reality's autosave feature is glitching and loading the same moment twice</button>
+                <button class="option">You're accidentally glimpsing memories from the hivemind of all parallel yous</button>
+                <button class="option">Time itself hiccupped and accidentally played the same second on repeat</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-24" class="question-container">
+            <div class="question-number">Question 24/25</div>
+            <div class="question">Your knees make that weird noise because:</div>
+            <div class="options">
+                <button class="option">They're transmitting Morse code to your ankles about your impending betrayal</button>
+                <button class="option">Tiny musicians are performing the symphony of your cartilage</button>
+                <button class="option">They're BOMBS NONONONO THEY ARE TICKING TOWARDS YOUR DEMISE NONONONO 💣💣💣💥💥💥💥</button>
+                <button class="option">They're actually laughing at inside jokes your bones tell each other</button>
+            </div>
+            <button class="next-btn">Next Question</button>
+        </div>
+        
+        <div id="question-25" class="question-container">
+            <div class="question-number">Question 25/25</div>
+            <div class="question">The true purpose of your existence is:</div>
+            <div class="options">
+                <button class="option">You're an NPC in someone else's dream and they're about to wake up</button>
+                <button class="option">Your entire life is a reality show for hyper-dimensional beings who find Abram's struggles</button>
+                <button class="option">You're actually a complex AI created to determine if this quiz is gay or not</button>
+                <button class="option">42</button>
+            </div>
+            <button class="next-btn">See Results!</button>
+        </div>
+        
+        <div class="results-container">
+            <div class="result-title"></div>
+            <div class="result-description"></div>
+            <div class="share-buttons">
+                <button class="share-btn twitter">Share on Twitter</button>
+                <button class="share-btn facebook">Share on Facebook</button>
+            </div>
+            <button class="restart-btn">Take Quiz Again</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const startBtn = document.querySelector('.start-btn');
+            const nextBtns = document.querySelectorAll('.next-btn');
+            const restartBtn = document.querySelector('.restart-btn');
+            const questions = document.querySelectorAll('.question-container');
+            const intro = document.querySelector('.intro');
+            const resultsContainer = document.querySelector('.results-container');
+            const resultTitle = document.querySelector('.result-title');
+            const resultDescription = document.querySelector('.result-description');
+            const progressBar = document.querySelector('.progress');
+            const options = document.querySelectorAll('.option');
+            const shareBtns = document.querySelectorAll('.share-btn');
+            
+            let currentQuestion = 0;
+            let answers = [];
+            
+            // Results data
+            const results = [
+                {
+                    title: "Congratulations! You're Gay!",
+                    description: "Our highly scientific algorithm has determined with 100% accuracy that you are, in fact, gay! Whether you knew it already or this is brand new information, welcome to the club! Your membership card and complimentary iced coffee are in the mail."
+                },
+                {
+                    title: "Plot Twist: You're Not Gay!",
+                    description: "Against all odds, our super accurate test has determined you're not gay. However, you're definitely an ally and probably have excellent taste in music. Or maybe the test is wrong? Only you can know for sure!"
+                }
+            ];
+            
+            // Hide progress bar initially
+            document.querySelector('.progress-bar').style.display = 'none';
+            
+            // Start quiz
+            let bgMusic;
+            startBtn.addEventListener('click', function() {
+                bgMusic = new Audio('sounds/background-music.mp3');
+                bgMusic.loop = true;
+                bgMusic.currentTime = 0;
+                bgMusic.play();
+                playSound('start');
+                startBtn.classList.add('hidden'); // Add hidden class instead of removing active
+                questions[0].classList.add('active');
+                document.querySelector('.progress-bar').style.display = 'block';
+                updateProgressBar();
+            });
+            
+            // Handle option selection
+            // Update the option click event handler in your existing JavaScript:
+
+    // Handle option selection
+    options.forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove active class from all options in the current question
+            const currentOptions = this.parentElement.querySelectorAll('.option');
+            currentOptions.forEach(opt => {
+                opt.style.backgroundColor = '#f1f1f1';
+                opt.style.fontWeight = 'normal';
+                opt.style.color = '#333'; // Reset text color to black/dark gray
+            });
+            
+            // Highlight selected option
+            this.style.backgroundColor = '#ff4081';
+            this.style.color = 'white';  // Set text to white for selected option
+            this.style.fontWeight = 'bold';
+            
+            // Show next button
+            this.parentElement.nextElementSibling.style.display = 'block';
+            
+            // Store answer
+            answers[currentQuestion] = this.textContent;
+        });
+    });
+
+    // Also update the restart function to reset text colors:
+    restartBtn.addEventListener('click', function() {
+        playSound('restart');
+        location.reload();
+    });
+            
+            // Handle next button
+            nextBtns.forEach((btn, index) => {
+                btn.addEventListener('click', function() {
+                    // Hide current question
+                    questions[currentQuestion].classList.remove('active');
+                    
+                    // Move to next question or show results
+                    currentQuestion++;
+                    updateProgressBar();
+                    
+                    if (currentQuestion < questions.length) {
+                        questions[currentQuestion].classList.add('active');
+                    } else {
+                        showResults();
+                    }
+                });
+            });
+            
+            
+            
+            // Update progress bar
+            function updateProgressBar() {
+                const progress = (currentQuestion / questions.length) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+            
+
+            // Update the showResults function
+            function showResults() {
+                // 96% chance of gay result, 4% chance of not gay result
+                const randomNum = Math.random() * 100;
+                const resultIndex = randomNum <= 96 ? 0 : 1;
+                
+                resultTitle.textContent = results[resultIndex].title;
+                resultDescription.textContent = results[resultIndex].description;
+                
+
+                
+                // Show results container
+                resultsContainer.style.display = 'block';
+                resultsContainer.classList.add('active');
+                
+                // Play sound based on result
+                const soundKey = resultIndex === 0 ? 'gayResult' : 'notGayResult';
+                playSound(soundKey);
+            }
+
+            
+            // Share buttons
+            shareBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const text = `I just took the Ultimate "Are You Gay?" Quiz and got: ${resultTitle.textContent}`;
+                    const url = window.location.href;
+                    
+                    if (this.classList.contains('twitter')) {
+                        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+                    } else if (this.classList.contains('facebook')) {
+                        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`, '_blank');
+                    }
+                });
+            });
+            // Add this inside your existing DOMContentLoaded event handler:
+
+            // Option button sounds - add 4 different sounds for the 4 options
+            options.forEach((option, index) => {
+            option.addEventListener('click', function() {
+                // Play the appropriate sound based on which option (1-4) was clicked
+                playSound('option' + ((index % 4) + 1));
+                
+                // Your existing option click code...
+            });
+            });
+
+            // Next button sound
+            nextBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                playSound('next');
+                // Your existing next button code...
+            });
+            });
+
+            // Results sound
+        });
+        // Add this to your existing JavaScript code
+        let jumpscareTimeout;
+
+        function setupJumpscare() {
+            // Clear any existing timeout
+            if (jumpscareTimeout) {
+                clearTimeout(jumpscareTimeout);
+            }
+
+            // Generate random interval between 30-45 seconds
+            const randomInterval = Math.random() * (45000 - 30000) + 30000;
+            
+            jumpscareTimeout = setTimeout(() => {
+                triggerJumpscare();
+                setupJumpscare(); // Schedule next jumpscare
+            }, randomInterval);
+        }
+
+        function triggerJumpscare() {
+        // Create overlay if it doesn't exist
+        let overlay = document.querySelector('.jumpscare-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'jumpscare-overlay';
+            
+            // Add the image
+            const img = document.createElement('img');
+            img.src = 'jumpscare.jpg'; // Replace with your image path
+            overlay.appendChild(img);
+            
+            document.body.appendChild(overlay);
+        }
+
+        // Show overlay
+        overlay.classList.add('active');
+        
+        // Play sound
+        const audio = new Audio('sounds/fnaf-2-death-scream.mp3');
+        audio.play();
+
+        // Hide overlay after 1 second
+        setTimeout(() => {
+            overlay.classList.remove('active');
+            audio.pause();
+            audio.currentTime = 0;
+        }, 1800);
+    }
+        setupJumpscare();
+    </script>
+</body>
+</html>
