@@ -787,6 +787,7 @@
 
             // Update the showResults function
             function showResults() {
+                bgMusic.pause();
                 // 96% chance of gay result, 4% chance of not gay result
                 const randomNum = Math.random() * 100;
                 const resultIndex = randomNum <= 96 ? 0 : 1;
